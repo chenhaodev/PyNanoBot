@@ -15,7 +15,22 @@ from nanobot.agent.delegation import (
     SubagentStatus,
     SubagentTask,
 )
+from nanobot.agent.lifecycle_hooks import (
+    HookEvent,
+    HookPoint,
+    HookType,
+    LifecycleHookManager,
+    RegisteredHook,
+    ShellHookConfig,
+)
 from nanobot.agent.memory import Consolidator, Dream, MemoryEntry, MemoryStore
+from nanobot.agent.reminders import (
+    DriftDetectors,
+    Reminder,
+    ReminderConfig,
+    ReminderEngine,
+    TriggerType,
+)
 from nanobot.agent.skills import SkillsLoader
 from nanobot.agent.subagent import SubagentManager
 
@@ -27,18 +42,29 @@ __all__ = [
     "ContextBuilder",
     "ContextCompactor",
     "DelegationPlan",
+    "DriftDetectors",
     "Dream",
     "estimate_tokens",
     "FileScope",
+    "HookEvent",
+    "HookPoint",
+    "HookType",
+    "LifecycleHookManager",
     "MergeReport",
     "MergeStrategy",
+    "MemoryEntry",
+    "MemoryStore",
+    "RegisteredHook",
+    "Reminder",
+    "ReminderConfig",
+    "ReminderEngine",
     "ScopedDelegationRunner",
+    "ShellHookConfig",
+    "SkillsLoader",
+    "SubagentManager",
     "SubagentOrchestrator",
     "SubagentResult",
     "SubagentStatus",
     "SubagentTask",
-    "MemoryEntry",
-    "MemoryStore",
-    "SkillsLoader",
-    "SubagentManager",
+    "TriggerType",
 ]

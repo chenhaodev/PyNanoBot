@@ -21,6 +21,7 @@
 ## 📢 News
 
 - **2026-04-06** 🧠 **Topic memory, compactor & delegation** — `memory/topics/`, global index, `ContextCompactor`, and in-process `SubagentOrchestrator` / `ScopedDelegationRunner` with `FileScope` (see [Memory](#-memory)); background spawn remains `SubagentManager`.
+- **2026-04-06** 🔔 **Anti-drift reminders & workspace lifecycle hooks** — `ReminderEngine` (periodic/contextual injection) and `LifecycleHookManager` with optional `<workspace>/.nanobot/hooks.json` shell hooks (`path_glob` + `fnmatch`). Exported from `nanobot.agent`; not wired into the default `AgentLoop` yet — use in custom pipelines.
 - **2026-04-02** 🧱 **Long-running tasks** run more reliably — core runtime hardening.
 - **2026-04-01** 🔑 GitHub Copilot auth restored; stricter workspace paths; OpenRouter Claude caching fix.
 - **2026-03-31** 🛰️ WeChat multimodal alignment, Discord/Matrix polish, Python SDK facade, MCP and tool fixes.
@@ -117,6 +118,7 @@
 - [Chat Apps](#-chat-apps)
 - [Agent Social Network](#-agent-social-network)
 - [Configuration](#️-configuration)
+- [Reminders & lifecycle hooks (library)](#reminders--lifecycle-hooks-library)
 - [Multiple Instances](#-multiple-instances)
 - [Memory](#-memory)
 - [CLI Reference](#-cli-reference)
@@ -1513,6 +1515,39 @@ Common examples: `UTC`, `America/New_York`, `America/Los_Angeles`, `Europe/Londo
 
 > Need another timezone? Browse the full [IANA Time Zone Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
+### Reminders & lifecycle hooks (library)
+
+These APIs are for **custom agent or tooling pipelines** — distinct from the runner’s async
+[`AgentHook`](docs/PYTHON_SDK.md) protocol. They are available from `nanobot.agent`:
+
+| Module | Role |
+|--------|------|
+| `nanobot.agent.reminders` | `ReminderEngine` — periodic and contextual reminder strings (anti-drift), with `ReminderConfig` and optional custom `Reminder` rules. |
+| `nanobot.agent.lifecycle_hooks` | `LifecycleHookManager` — register Python callbacks at string hook points (`HookPoint`), or load shell commands from JSON. |
+
+**Shell hooks file:** `<workspace>/.nanobot/hooks.json`
+
+Top-level key **`hooks`**: a list of objects with `name`, `on` (hook point, e.g. `on_file_write`), `command` (shell string; may use `{path}` etc. from the event payload), optional `path_glob` (`fnmatch` against `path` in event data — empty means no filter), `timeout` (seconds), and `enabled`.
+
+```json
+{
+  "hooks": [
+    {
+      "name": "touch_py",
+      "on": "on_file_write",
+      "command": "touch {path}.done",
+      "path_glob": "*.py",
+      "timeout": 10,
+      "enabled": true
+    }
+  ]
+}
+```
+
+Load with `LifecycleHookManager.load_shell_hooks(workspace_path)`. The default chat/agent loop does not call this manager automatically; integrate where you build context or wrap tools.
+
+**Tests:** `pytest tests/agent/test_reminders.py tests/agent/test_lifecycle_hooks.py -q`
+
 ## 🧩 Multiple Instances
 
 Run multiple nanobot instances simultaneously with separate configs and runtime data. Use `--config` as the main entrypoint. Optionally pass `--workspace` during `onboard` when you want to initialize or update the saved workspace for a specific instance.
@@ -1665,9 +1700,10 @@ If you want the full design, see [docs/MEMORY.md](docs/MEMORY.md).
 > **Library stack smoke (topic memory + compactor + delegation):** combined wiring is
 > exercised in `tests/agent/test_library_stack_integration.py`. Run
 > `pytest tests/agent/test_library_stack_integration.py -q` after changing
-> `nanobot.agent.memory`, `compactor`, or `delegation`. Full agent package:
-> `pytest tests/agent/ -q` (use `--ignore=tests/agent/test_git_store.py` if Dulwich/git
-> init fails in your environment).
+> `nanobot.agent.memory`, `compactor`, or `delegation`. **Reminders / lifecycle hooks:**
+> `tests/agent/test_reminders.py`, `tests/agent/test_lifecycle_hooks.py`. Full agent
+> package: `pytest tests/agent/ -q` (use `--ignore=tests/agent/test_git_store.py` if
+> Dulwich/git init fails in your environment).
 
 ## 💻 CLI Reference
 
@@ -1934,6 +1970,8 @@ nanobot/
 │   ├── memory.py   #    Persistent memory (history, topics, Dream)
 │   ├── compactor.py #   Optional tiered context (library)
 │   ├── delegation.py #  Scoped subagent orchestration (library)
+│   ├── lifecycle_hooks.py # Workspace hook registry + hooks.json shell hooks
+│   ├── reminders.py #   Anti-drift reminder engine (library)
 │   ├── skills.py   #    Skills loader
 │   ├── subagent.py #    Background task execution
 │   └── tools/      #    Built-in tools (incl. spawn)
