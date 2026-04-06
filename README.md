@@ -2,7 +2,7 @@
 
 # PyNanoBot
 
-**在 [nanobot](https://github.com/HKUDS/nanobot) 之上，搭建发行层与更贴近落地的生态与技术。**
+**在 [nanobot](https://github.com/HKUDS/nanobot)（OpenClaw 精简线）之上，搭建发行层与扩展：引入高级智能体 / VibeCoding 可落地模式，并优先适配小模型与 GGUF。**
 
 [![PyPI](https://img.shields.io/pypi/v/pynanobot)](https://pypi.org/project/pynanobot/)
 [![Python](https://img.shields.io/badge/python-≥3.11-blue)](https://www.python.org/)
@@ -15,7 +15,7 @@
 
 ## English summary
 
-**PyNanoBot** is a **distribution and ecosystem layer** on top of the **nanobot** agent runtime (shipped on PyPI as **`nanobot-ai`**). Think **Ollama vs llama.cpp**: the upstream project is the lean, reusable engine; this repository adds versioning, release discipline, `pynanobot` packaging, and fork-specific modules under `pynanobot/ext/` (reminders, lifecycle hooks, compactor, delegation wiring, etc.), while keeping `nanobot/` mergeable with [HKUDS/nanobot](https://github.com/HKUDS/nanobot).
+**PyNanoBot** is a **distribution and extension layer** on top of the **nanobot** agent runtime (PyPI **`nanobot-ai`**): the upstream stays a lean, mergeable core in the **OpenClaw**-style lightweight line; this repo adds versioning, `pynanobot` packaging, and modules under **`pynanobot/ext/`** (reminders, lifecycle hooks, compactor, delegation, etc.). The product focus is bringing **agent / VibeCoding** patterns that work elsewhere (e.g. skills ecosystems, IDE-oriented workflows) into this stack, while **prioritizing small models and GGUF-friendly** setups via providers and docs—not rebuilding an inference engine here.
 
 - **Install:** `pip install pynanobot` (pulls `nanobot-ai`).
 - **Imports:** `import pynanobot` for the distribution layer; `nanobot` comes from the dependency.
@@ -25,13 +25,14 @@
 
 ## 本仓库与 nanobot 的关系
 
-业界里常把「精炼引擎与其上的发行与生态」理解成 **llama.cpp** 与 **Ollama** 那一类关系：**上游** [HKUDS/nanobot](https://github.com/HKUDS/nanobot)（PyPI 包 **`nanobot-ai`**）提供轻量、可合并的核心 Agent 运行时；**本仓库**在其上叠加版本与发行、`pynanobot` 命名空间、文档与路线图，并把独有扩展收敛到 **`pynanobot/ext`** 等约定位置。不是另起炉灶重写引擎，而是**以前者为地基**，搭一层更利于分发、集成与长期维护的生态与技术。
+**上游** [HKUDS/nanobot](https://github.com/HKUDS/nanobot)（PyPI **`nanobot-ai`**）是轻量、可合并的核心 Agent 运行时，常被放在 **OpenClaw** 一类的精简叙事里。**本仓库**不替代上游引擎，而是在其上叠加：**发行与版本**（`pynanobot`）、**扩展实现**（`pynanobot/ext`），并把 **Oh-my-OpenCode、Claude Code、VibeCoding** 等生态里可复用的产品与工程模式（skills 兼容、钩子与上下文策略等）**接入**这条线，同时把 **小模型 / GGUF / 本地推理** 作为一等目标写进文档与默认策略。若需要向他人类比「引擎 vs 发行层」，仍可参考 **llama.cpp 与 Ollama** 那种分工，但**主定位**见 [docs/PHILOSOPHY.md](docs/PHILOSOPHY.md)。
 
 原则要点（详见 [docs/PHILOSOPHY.md](docs/PHILOSOPHY.md)）：
 
 - **边界清楚**：上游以同步基线、可合并为主；本仓库独有逻辑放在约定命名空间（如 `pynanobot/ext`）。
 - **可追踪**：发版与开发均应对应明确的上游 commit/tag（[upstream.lock](upstream.lock)、[docs/UPSTREAM.md](docs/UPSTREAM.md)）。
-- **生态优先**：优先对接本地与 OpenAI-compatible 推理栈，而非在仓库内重复造「大模型引擎」。
+- **生态优先**：优先对接本地与 OpenAI-compatible 推理栈（如 Ollama、vLLM 等），而非在仓库内重复造「大模型引擎」。
+- **扩展优先**：高级智能体与 VibeCoding 相关能力优先落在扩展层与文档约定，保持 `nanobot/` 可合并。
 
 ---
 
@@ -94,7 +95,7 @@ PyNanoBot 在**默认产品路径**上使用 `PyNanoAgentLoop` / `PyNanoAgentRun
 
 | 文档 | 内容 |
 |------|------|
-| [docs/PHILOSOPHY.md](docs/PHILOSOPHY.md) | 定位、Ollama/llama.cpp 类比、原则 |
+| [docs/PHILOSOPHY.md](docs/PHILOSOPHY.md) | 定位、扩展层与 OpenClaw 精简线、小模型/GGUF、原则 |
 | [PYNANOBOT.md](PYNANOBOT.md) | 仓库目录与包边界 |
 | [docs/UPSTREAM.md](docs/UPSTREAM.md) | 上游地址、同步流程 |
 | [docs/VERSIONING.md](docs/VERSIONING.md) | 版本与基线策略 |
@@ -123,6 +124,6 @@ PyNanoBot 在**默认产品路径**上使用 `PyNanoAgentLoop` / `PyNanoAgentRun
 
 <div align="center">
 
-**PyNanoBot** — 发行层与生态，筑于 nanobot 之上。
+**PyNanoBot** — 发行层与扩展，筑于 nanobot 之上。
 
 </div>

@@ -1,18 +1,24 @@
 # PyNanoBot 的定位与哲学
 
-## 与上游的关系：类比 Ollama 与 llama.cpp
+## 与上游的关系：扩展层，而不是第二套引擎
 
-| 角色 | 类比 | 职责 |
+**上游** [nanobot](https://github.com/HKUDS/nanobot)（常被视作 **OpenClaw** 思路下的精简、可合并 Agent 运行时）提供轻量核心：通道、Provider、工具链与可研究的行为。**本仓库（PyNanoBot）** 在其上扮演 **发行与扩展层**：把 **Oh-my-OpenCode、Claude Code、VibeCoding** 等生态里可产品化的模式（skills 兼容、工作流钩子、上下文与委托等）**接到**这条精简线上，并**优先适配小模型与 GGUF/本地推理**（文档、预设、约束，而非在仓库内重写推理引擎）。
+
+| 层级 | 角色 | 职责 |
 |------|------|------|
-| **llama.cpp** | 上游 **[nanobot](https://github.com/HKUDS/nanobot)** | 精炼、可复用的核心引擎：轻量 Agent 运行时、通道、Provider、工具链。追求代码少、行为清晰、可研究。 |
-| **Ollama** | **PyNanoBot（本仓库）** | 在**明确基线版本**的上游之上，搭建更易用的发行层：版本管理、本地与中小模型、GGUF/端侧路径、预设与模板、与本仓库一致的路线图。 |
+| **上游 nanobot** | 可合并的核心 | 精炼 Agent 运行时、通道、Provider、工具链；追求与上游同步、diff 可控。 |
+| **PyNanoBot** | 发行与扩展 | 版本与 `pynanobot` 命名空间、`pynanobot/ext` 专有逻辑、路线图与面向本地/中小模型的落地说明。 |
 
 原则：
 
 1. **不混淆边界**：上游合入以「同步基线」为主；本仓库特有功能放在清晰命名空间或 `docs/` 约定的扩展点，避免 silent fork。
 2. **可追踪**：任意发行版都能说明「基于上游哪一 tag/commit」，见 `upstream.lock` 与 [UPSTREAM.md](./UPSTREAM.md)。
-3. **本地优先友好**：在同等 API 抽象下，优先为 **小模型、量化、本地推理、资源受限环境** 优化默认与文档（路线图见 [ROADMAP.md](./ROADMAP.md)）。
-4. **生态而非重写**：优先适配（Ollama、llama.cpp、vLLM、OpenAI-compatible 端点等），而不是在核心层重复实现推理引擎。
+3. **本地与小模型优先**：在同等 API 抽象下，优先为 **小模型、量化、本地推理、资源受限环境** 优化默认与文档（路线图见 [ROADMAP.md](./ROADMAP.md)）。
+4. **生态而非重写**：优先适配常见推理栈（**Ollama**、**llama.cpp** 系服务、**vLLM**、OpenAI-compatible 端点等），而不是在核心层重复实现推理引擎。
+
+### 类比（可选）
+
+若需要一句话向他人说明「引擎 vs 发行层」，仍可借用 **llama.cpp 与 Ollama** 那种「精炼引擎 + 其上打包与体验」的关系来类比——但 **PyNanoBot 的主叙事** 是上面的「扩展 + OpenClaw 精简线 + 小模型/GGUF」，不必把 Ollama 绑定为唯一本地路径。
 
 ## 本仓库额外承担的内容（示例）
 

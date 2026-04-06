@@ -43,4 +43,4 @@
 
 ## 与 `docs/PHILOSOPHY.md` 的关系
 
-模型 A 是「Ollama vs llama.cpp」分工在 **Python 打包层** 的落地：上游 wheel = 引擎；`pynanobot` = 发行与扩展命名空间。
+模型 A 是 [PHILOSOPHY.md](./PHILOSOPHY.md) 里「上游核心 + PyNanoBot 发行与扩展」在 **Python 打包层** 的落地：上游 **`nanobot-ai`** wheel = 可合并的核心运行时；**`pynanobot`** = 发行与扩展命名空间（含 `pynanobot/ext`）。

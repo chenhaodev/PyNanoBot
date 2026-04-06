@@ -1,7 +1,10 @@
 [project]
 name = "pynanobot"
 version = "0.3.0"
-description = "PyNanoBot: distribution layer on top of nanobot-ai (import pynanobot; upstream-aware)"
+description = (
+    "PyNanoBot: extension & distribution on nanobot-ai; "
+    "agent/VibeCoding patterns, GGUF/small-model focus (import pynanobot)."
+)
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.11"
 license = {text = "MIT"}
@@ -9,7 +12,7 @@ authors = [
     {name = "nanobot contributors"},
     {name = "PyNanoBot maintainers"},
 ]
-keywords = ["ai", "agent", "chatbot", "pynanobot", "nanobot"]
+keywords = ["ai", "agent", "chatbot", "pynanobot", "nanobot", "openclaw", "vibecoding"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
