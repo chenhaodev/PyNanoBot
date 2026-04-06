@@ -1662,6 +1662,13 @@ time.
 
 If you want the full design, see [docs/MEMORY.md](docs/MEMORY.md).
 
+> **Library stack smoke (topic memory + compactor + delegation):** combined wiring is
+> exercised in `tests/agent/test_library_stack_integration.py`. Run
+> `pytest tests/agent/test_library_stack_integration.py -q` after changing
+> `nanobot.agent.memory`, `compactor`, or `delegation`. Full agent package:
+> `pytest tests/agent/ -q` (use `--ignore=tests/agent/test_git_store.py` if Dulwich/git
+> init fails in your environment).
+
 ## 💻 CLI Reference
 
 | Command | Description |
