@@ -20,6 +20,7 @@
 
 ## 📢 News
 
+- **2026-04-06** 🧠 **Topic memory & compactor** — workspace `memory/topics/` with categorized notes, optional global index under `~/.nanobot/memory/`, and a library `ContextCompactor` for tiered context (see [Memory](#-memory)); session counter drives optional consolidation metadata.
 - **2026-04-02** 🧱 **Long-running tasks** run more reliably — core runtime hardening.
 - **2026-04-01** 🔑 GitHub Copilot auth restored; stricter workspace paths; OpenRouter Claude caching fix.
 - **2026-03-31** 🛰️ WeChat multimodal alignment, Discord/Matrix polish, Python SDK facade, MCP and tool fixes.
@@ -1637,6 +1638,19 @@ time.
 
 - `memory/history.jsonl` stores append-only summarized history
 - `SOUL.md`, `USER.md`, and `memory/MEMORY.md` store long-term knowledge managed by Dream
+- **Topic store** (optional structured notes): `memory/topics/<topic>.md` entries with front
+  matter (`category`, `timestamp`), one-line pointers appended to `memory/MEMORY.md`, and
+  `memory/meta.txt` for consolidation scheduling. Use `MemoryStore.remember()`,
+  `read_topic()`, `search()`, and `build_context_block()` from `nanobot.agent.memory`.
+- **Global index**: if present, `~/.nanobot/memory/MEMORY.md` is merged into the in-context
+  index via `read_index()` (same filename as the project index, different directory).
+- **Daily notes**: `memory/YYYY-MM-DD.md` for per-day scratch content (`read_today` /
+  `append_today`).
+- **Context compactor** (`nanobot.agent.compactor.ContextCompactor`): optional tiered
+  L0→L1→L2→L3 compression for long synthetic transcripts; can flush digests to persistent
+  memory via `remember()`. The main agent loop still uses the existing token-based
+  `Consolidator` for session history — use the compactor where you assemble a custom
+  context pipeline (e.g. subagents or future integrations).
 - `Dream` runs on a schedule and can also be triggered manually
 - memory changes can be inspected and restored with built-in commands
 
@@ -1904,7 +1918,8 @@ nanobot/
 ├── agent/          # 🧠 Core agent logic
 │   ├── loop.py     #    Agent loop (LLM ↔ tool execution)
 │   ├── context.py  #    Prompt builder
-│   ├── memory.py   #    Persistent memory
+│   ├── memory.py   #    Persistent memory (history, topics, Dream)
+│   ├── compactor.py #   Optional tiered context (library)
 │   ├── skills.py   #    Skills loader
 │   ├── subagent.py #    Background task execution
 │   └── tools/      #    Built-in tools (incl. spawn)
