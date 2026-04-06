@@ -77,6 +77,8 @@ class AgentDefaults(Base):
     reasoning_effort: str | None = None  # low / medium / high - enables LLM thinking mode
     timezone: str = "UTC"  # IANA timezone, e.g. "Asia/Shanghai", "America/New_York"
     dream: DreamConfig = Field(default_factory=DreamConfig)
+    reminders_enabled: bool = True
+    lifecycle_hooks_enabled: bool = True
 
 
 class AgentsConfig(Base):

@@ -1,122 +1,35 @@
-# Contributing to nanobot
+# 参与贡献（PyNanoBot）
 
-Thank you for being here.
+## 与上游 nanobot 的关系
 
-nanobot is built with a simple belief: good tools should feel calm, clear, and humane.
-We care deeply about useful features, but we also believe in achieving more with less:
-solutions should be powerful without becoming heavy, and ambitious without becoming
-needlessly complicated.
+请先阅读 [docs/PHILOSOPHY.md](docs/PHILOSOPHY.md) 与 [docs/UPSTREAM.md](docs/UPSTREAM.md)。本仓库的变更应尽量：
 
-This guide is not only about how to open a PR. It is also about how we hope to build
-software together: with care, clarity, and respect for the next person reading the code.
+- 可合并回上游的改进 → 考虑同时向上游提 PR，或先在本分支保持与上游 diff 最小化。
+- 仅发行版需要的逻辑 → 明确文档与命名空间，避免污染 `nanobot/` 核心语义。
 
-## Maintainers
+## 发版前检查
 
-| Maintainer | Focus |
-|------------|-------|
-| [@re-bin](https://github.com/re-bin) | Project lead, `main` branch |
-| [@chengyongru](https://github.com/chengyongru) | `nightly` branch, experimental features |
+- `pyproject.toml` 中 `version` 与 `upstream.lock` 中 `pynanobot.version` 一致：  
+  `python scripts/check_upstream_lock.py`
+- 若已合并上游新提交：更新 `upstream.baseline_commit`（及 `baseline_tag` 如有）。
 
-## Branching Strategy
+## 模型 A（减少 fork）
 
-We use a two-branch model to balance stability and exploration:
+- **新功能** 优先落在 **`pynanobot/ext/`**，避免继续增大 `nanobot/` 与上游的 diff。
+- 配置 `git remote upstream` 后可用 **`python scripts/report_fork_diff.py`** 查看 `nanobot/` 相对上游的变更统计。详见 `docs/EVOLUTION_MODEL_A.md`。
 
-| Branch | Purpose | Stability |
-|--------|---------|-----------|
-| `main` | Stable releases | Production-ready |
-| `nightly` | Experimental features | May have bugs or breaking changes |
-
-### Which Branch Should I Target?
-
-**Target `nightly` if your PR includes:**
-
-- New features or functionality
-- Refactoring that may affect existing behavior
-- Changes to APIs or configuration
-
-**Target `main` if your PR includes:**
-
-- Bug fixes with no behavior changes
-- Documentation improvements
-- Minor tweaks that don't affect functionality
-
-**When in doubt, target `nightly`.** It is easier to move a stable idea from `nightly`
-to `main` than to undo a risky change after it lands in the stable branch.
-
-### How Does Nightly Get Merged to Main?
-
-We don't merge the entire `nightly` branch. Instead, stable features are **cherry-picked** from `nightly` into individual PRs targeting `main`:
-
-```
-nightly  ──┬── feature A (stable) ──► PR ──► main
-           ├── feature B (testing)
-           └── feature C (stable) ──► PR ──► main
-```
-
-This happens approximately **once a week**, but the timing depends on when features become stable enough.
-
-### Quick Summary
-
-| Your Change | Target Branch |
-|-------------|---------------|
-| New feature | `nightly` |
-| Bug fix | `main` |
-| Documentation | `main` |
-| Refactoring | `nightly` |
-| Unsure | `nightly` |
-
-## Development Setup
-
-Keep setup boring and reliable. The goal is to get you into the code quickly:
+## 安装与开发依赖
 
 ```bash
-# Clone the repository
-git clone https://github.com/HKUDS/nanobot.git
-cd nanobot
-
-# Install with dev dependencies
 pip install -e ".[dev]"
-
-# Run tests
-pytest
-
-# Lint code
-ruff check nanobot/
-
-# Format code
-ruff format nanobot/
 ```
 
-## Code Style
+（`pynanobot` 会拉取 `nanobot-ai`；在仓库根目录跑测试时通常仍使用工作区内的 `nanobot/` 源码。）
 
-We care about more than passing lint. We want nanobot to stay small, calm, and readable.
+## 测试
 
-When contributing, please aim for code that feels:
+```bash
+pytest
+```
 
-- Simple: prefer the smallest change that solves the real problem
-- Clear: optimize for the next reader, not for cleverness
-- Decoupled: keep boundaries clean and avoid unnecessary new abstractions
-- Honest: do not hide complexity, but do not create extra complexity either
-- Durable: choose solutions that are easy to maintain, test, and extend
-
-In practice:
-
-- Line length: 100 characters (`ruff`)
-- Target: Python 3.11+
-- Linting: `ruff` with rules E, F, I, N, W (E501 ignored)
-- Async: uses `asyncio` throughout; pytest with `asyncio_mode = "auto"`
-- Prefer readable code over magical code
-- Prefer focused patches over broad rewrites
-- If a new abstraction is introduced, it should clearly reduce complexity rather than move it around
-
-## Questions?
-
-If you have questions, ideas, or half-formed insights, you are warmly welcome here.
-
-Please feel free to open an [issue](https://github.com/HKUDS/nanobot/issues), join the community, or simply reach out:
-
-- [Discord](https://discord.gg/MnCvHqpUGB)
-- [Feishu/WeChat](./COMMUNICATION.md)
-- Email: Xubin Ren (@Re-bin) — <xubinrencs@gmail.com>
-
-Thank you for spending your time and care on nanobot. We would love for more people to participate in this community, and we genuinely welcome contributions of all sizes.
+（环境原因导致个别与 Git 相关的测试失败时，以 CI/本地说明为准。）

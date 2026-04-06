@@ -1,59 +1,64 @@
-"""Agent core module."""
+"""Re-export ``nanobot.agent`` public API under ``pynanobot.agent``."""
 
-from nanobot.agent.context import ContextBuilder
-from nanobot.agent.hook import AgentHook, AgentHookContext, CompositeHook
-from nanobot.agent.loop import AgentLoop
-from nanobot.agent.memory import Consolidator, Dream, MemoryEntry, MemoryStore
-from pynanobot.ext.compactor import ContextCompactor, estimate_tokens
-from pynanobot.ext.delegation import (
+from __future__ import annotations
+
+from nanobot.agent import (
+    AgentHook,
+    AgentHookContext,
+    AgentLoop,
+    CompositeHook,
+    Consolidator,
+    ContextBuilder,
+    ContextCompactor,
     DelegationPlan,
+    Dream,
+    DriftDetectors,
+    estimate_tokens,
     FileScope,
-    MergeReport,
-    MergeStrategy,
-    ScopedDelegationRunner,
-    SubagentOrchestrator,
-    SubagentResult,
-    SubagentStatus,
-    SubagentTask,
-)
-from pynanobot.ext.lifecycle_hooks import (
     HookEvent,
     HookPoint,
     HookType,
     LifecycleHookManager,
+    MemoryEntry,
+    MemoryStore,
+    MergeReport,
+    MergeStrategy,
     RegisteredHook,
-    ShellHookConfig,
-)
-from pynanobot.ext.reminders import (
-    DriftDetectors,
     Reminder,
     ReminderConfig,
     ReminderEngine,
+    ScopedDelegationRunner,
+    ShellHookConfig,
+    SkillsLoader,
+    SubagentManager,
+    SubagentOrchestrator,
+    SubagentResult,
+    SubagentStatus,
+    SubagentTask,
     TriggerType,
 )
-from nanobot.agent.skills import SkillsLoader
-from nanobot.agent.subagent import SubagentManager
 
 __all__ = [
     "AgentHook",
     "AgentHookContext",
     "AgentLoop",
     "CompositeHook",
+    "Consolidator",
     "ContextBuilder",
     "ContextCompactor",
     "DelegationPlan",
-    "DriftDetectors",
     "Dream",
+    "DriftDetectors",
     "estimate_tokens",
     "FileScope",
     "HookEvent",
     "HookPoint",
     "HookType",
     "LifecycleHookManager",
-    "MergeReport",
-    "MergeStrategy",
     "MemoryEntry",
     "MemoryStore",
+    "MergeReport",
+    "MergeStrategy",
     "RegisteredHook",
     "Reminder",
     "ReminderConfig",

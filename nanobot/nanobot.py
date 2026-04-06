@@ -66,7 +66,9 @@ class Nanobot:
         bus = MessageBus()
         defaults = config.agents.defaults
 
-        loop = AgentLoop(
+        from pynanobot.ext.loop import PyNanoAgentLoop
+
+        loop = PyNanoAgentLoop(
             bus=bus,
             provider=provider,
             workspace=config.workspace_path,
@@ -81,6 +83,8 @@ class Nanobot:
             restrict_to_workspace=config.tools.restrict_to_workspace,
             mcp_servers=config.tools.mcp_servers,
             timezone=defaults.timezone,
+            reminders_enabled=defaults.reminders_enabled,
+            lifecycle_hooks_enabled=defaults.lifecycle_hooks_enabled,
         )
         return cls(loop)
 

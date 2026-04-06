@@ -1,0 +1,14 @@
+# PyNanoBot upstream baseline (single source of truth for sync).
+# Update baseline_commit whenever you merge/rebase from HKUDS/nanobot.
+
+upstream:
+  repo: https://github.com/HKUDS/nanobot
+  baseline_tag: null
+  # Last aligned upstream commit (set to your actual merge-base when syncing).
+  baseline_commit: d108879b48d73261bc4c5466fe6ba32bd71a21f5
+
+pynanobot:
+  version: 0.3.0
+  notes: >
+    Wheel-only package pynanobot; runtime nanobot from PyPI nanobot-ai.
+    Vendored nanobot/ in git for fork development.

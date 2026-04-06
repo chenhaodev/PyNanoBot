@@ -30,5 +30,12 @@ jobs:
     - name: Install all dependencies
       run: uv sync --all-extras
 
+    - name: Verify upstream.lock matches pyproject version
+      run: uv run python scripts/check_upstream_lock.py
+
+    - name: Verify pynanobot imports
+      run: |
+        uv run python -c "import pynanobot; import pynanobot.agent; import pynanobot.ext; import pynanobot.ext.loop; import pynanobot.ext.runner"
+
     - name: Run tests
       run: uv run pytest tests/

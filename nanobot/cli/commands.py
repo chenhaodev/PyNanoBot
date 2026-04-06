@@ -541,8 +541,8 @@ def serve(
         raise typer.Exit(1)
 
     from loguru import logger
-    from nanobot.agent.loop import AgentLoop
     from nanobot.api.server import create_app
+    from pynanobot.ext.loop import PyNanoAgentLoop
     from nanobot.bus.queue import MessageBus
     from nanobot.session.manager import SessionManager
 
@@ -560,7 +560,7 @@ def serve(
     bus = MessageBus()
     provider = _make_provider(runtime_config)
     session_manager = SessionManager(runtime_config.workspace_path)
-    agent_loop = AgentLoop(
+    agent_loop = PyNanoAgentLoop(
         bus=bus,
         provider=provider,
         workspace=runtime_config.workspace_path,
@@ -577,6 +577,8 @@ def serve(
         mcp_servers=runtime_config.tools.mcp_servers,
         channels_config=runtime_config.channels,
         timezone=runtime_config.agents.defaults.timezone,
+        reminders_enabled=runtime_config.agents.defaults.reminders_enabled,
+        lifecycle_hooks_enabled=runtime_config.agents.defaults.lifecycle_hooks_enabled,
     )
 
     model_name = runtime_config.agents.defaults.model
@@ -619,13 +621,13 @@ def gateway(
     config: str | None = typer.Option(None, "--config", "-c", help="Path to config file"),
 ):
     """Start the nanobot gateway."""
-    from nanobot.agent.loop import AgentLoop
     from nanobot.bus.queue import MessageBus
     from nanobot.channels.manager import ChannelManager
     from nanobot.cron.service import CronService
     from nanobot.cron.types import CronJob
     from nanobot.heartbeat.service import HeartbeatService
     from nanobot.session.manager import SessionManager
+    from pynanobot.ext.loop import PyNanoAgentLoop
 
     if verbose:
         import logging
@@ -650,7 +652,7 @@ def gateway(
     cron = CronService(cron_store_path)
 
     # Create agent with cron service
-    agent = AgentLoop(
+    agent = PyNanoAgentLoop(
         bus=bus,
         provider=provider,
         workspace=config.workspace_path,
@@ -668,6 +670,8 @@ def gateway(
         mcp_servers=config.tools.mcp_servers,
         channels_config=config.channels,
         timezone=config.agents.defaults.timezone,
+        reminders_enabled=config.agents.defaults.reminders_enabled,
+        lifecycle_hooks_enabled=config.agents.defaults.lifecycle_hooks_enabled,
     )
 
     # Set cron callback (needs agent)
@@ -859,9 +863,9 @@ def agent(
     """Interact with the agent directly."""
     from loguru import logger
 
-    from nanobot.agent.loop import AgentLoop
     from nanobot.bus.queue import MessageBus
     from nanobot.cron.service import CronService
+    from pynanobot.ext.loop import PyNanoAgentLoop
 
     config = _load_runtime_config(config, workspace)
     sync_workspace_templates(config.workspace_path)
@@ -882,7 +886,7 @@ def agent(
     else:
         logger.disable("nanobot")
 
-    agent_loop = AgentLoop(
+    agent_loop = PyNanoAgentLoop(
         bus=bus,
         provider=provider,
         workspace=config.workspace_path,
@@ -899,6 +903,8 @@ def agent(
         mcp_servers=config.tools.mcp_servers,
         channels_config=config.channels,
         timezone=config.agents.defaults.timezone,
+        reminders_enabled=config.agents.defaults.reminders_enabled,
+        lifecycle_hooks_enabled=config.agents.defaults.lifecycle_hooks_enabled,
     )
     restart_notice = consume_restart_notice_from_env()
     if restart_notice and should_show_cli_restart_notice(restart_notice, session_id):
